@@ -4,17 +4,16 @@
 # Author: Jajati Keshari Routray
 # Date Created: Mar 7 2017
 # Usage: Download Middlebury stereo dataset
-# Requirements: Python >= 3.4.1, BeautifulSoup, lxml library
+# Requirements: Python >= 3.4.1
 # License: MIT
 
 # TODO:
 # 1. File download error handling, File already present handling
 # 2. File download progressbar
-# 3. Use regex in bs4 findAll instead of for loop to remove non-zip elements
 
 import os
-import urllib
-from bs4 import BeautifulSoup
+import re
+import urllib.request as url_req
 
 dataset_folder = input('\nPlease provide dataset directory path to download:\n')
 
@@ -34,32 +33,25 @@ if not os.path.exists(dataset_folder):
         home = os.path.expanduser("~")
         dataset_folder = home + '/stereo_dataset'
         os.makedirs(dataset_folder, exist_ok=True)
-        print('\nCreating dataset directory : {}\n'.format(dataset_folder))
+        print('\nCreating default dataset directory : {}\n'.format(dataset_folder))
 
 # Change current working directory to Dataset directory
 os.chdir(dataset_folder)
 
 # Read and parse website html
 url = 'http://vision.middlebury.edu/stereo/data/scenes2014/zip/'
-source = urllib.request.urlopen(url)
-soup = BeautifulSoup(source, "lxml")
+response = url_req.urlopen(url)
+html = response.read().decode('utf-8')
 
 # [<a href="xyz.zip">xyz.zip</a>, ...] anchor elements
-anchor_list = soup.findAll('a')
-zip_anchor_list = []
-
-# Remove non-zip anchor elements
-for link in anchor_list[:]:
-    link_ext = link.get('href')
-    if link_ext.endswith('.zip'):
-        zip_anchor_list.append(link_ext)
+anchor_list = re.findall(r"\"([A-Z]\w+-.+\.zip)\"", html)
 
 count = 0
-print('Downloading...')
+print('Downloading...\n')
 
-for link_ext in zip_anchor_list:
+for link_ext in anchor_list:
         count += 1
-        print('{}/{} : {}'.format(count, len(zip_anchor_list), link_ext))
-        urllib.request.urlretrieve(url + link_ext, link_ext)  # retrieve(url, filename)
+        print('{}/{} : {}'.format(count, len(anchor_list), link_ext))
+        url_req.urlretrieve(url + link_ext, link_ext)  # retrieve(url, filename)
 
-print('Download complete')
+print('\nDownload complete')
