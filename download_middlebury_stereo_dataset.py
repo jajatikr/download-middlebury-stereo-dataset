@@ -10,6 +10,7 @@
 # TODO:
 # 1. File download error handling, File already present handling
 # 2. File download progressbar
+# 3. Handle URL errors
 
 import os
 import re
@@ -51,7 +52,9 @@ print('Downloading...\n')
 
 for link_ext in anchor_list:
         count += 1
-        print('{}/{} : {}'.format(count, len(anchor_list), link_ext))
-        url_req.urlretrieve(url + link_ext, link_ext)  # retrieve(url, filename)
+        download_link = url + link_ext
+        file_size = float(url_req.urlopen(download_link).info()['Content-Length']) / 1048576
+        print('{:>2}/{} : {:>6} MB | {} '.format(count, len(anchor_list), round(file_size, 2), link_ext))
+        url_req.urlretrieve(url + link_ext, link_ext)  # download : retrieve(url, filename)
 
-print('\nDownload complete')
+print('\nDownload complete\n')
