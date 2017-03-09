@@ -16,24 +16,25 @@ import os
 import urllib
 from bs4 import BeautifulSoup
 
-dataset_folder = input('Please provide dataset directory path to download:\n')
+dataset_folder = input('\nPlease provide dataset directory path to download:\n')
 
 # Check and create Dataset directory
-try:
-    # Creates folder. Raises error if folder exists
-    os.makedirs(dataset_folder, exist_ok=False)
-    print("Created dataset directory : {}".format(dataset_folder))
-except OSError as e:
-    # Error printing:
-    print('Unable to locate or create provided directory:')
-    print('Error No.         : {}'.format(e.errno))
-    print('Location          : {}'.format(e.filename))
-    print('Error description : {}'.format(e.strerror))
-    # Exception handling
-    home = os.path.expanduser("~")
-    dataset_folder = home + '/stereo_dataset'
-    os.makedirs(dataset_folder, exist_ok=True)
-    print('\nCreating dataset directory : {}\n'.format(dataset_folder))
+if not os.path.exists(dataset_folder):
+    try:
+        # Creates folder. Raises error if folder exists
+        os.makedirs(dataset_folder, exist_ok=False)
+        print("Created dataset directory : {}".format(dataset_folder))
+    except OSError as e:
+        # Error printing:
+        print('Unable to locate or create provided directory:')
+        print('Error No.         : {}'.format(e.errno))
+        print('Location          : {}'.format(e.filename))
+        print('Error description : {}'.format(e.strerror))
+        # Exception handling
+        home = os.path.expanduser("~")
+        dataset_folder = home + '/stereo_dataset'
+        os.makedirs(dataset_folder, exist_ok=True)
+        print('\nCreating dataset directory : {}\n'.format(dataset_folder))
 
 # Change current working directory to Dataset directory
 os.chdir(dataset_folder)
