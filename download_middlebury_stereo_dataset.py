@@ -24,7 +24,7 @@ def url_response(website):
         return response
     except HTTPError as e:
         print('The server couldn\'t fulfill the request.')
-        print('Error code: ', e.code)
+        print('Reason: ', e.reason)
     except URLError as e:
         print('Unable to reach the server.')
         print('Reason: ', e.reason)
