@@ -21,7 +21,7 @@ dataset_folder = input('\nPlease provide dataset directory path to download:\n')
 # Check and create Dataset directory
 if not os.path.exists(dataset_folder):
     try:
-        # Creates folder. Raises error if folder exists
+        # Creates folder. Raises error if folder exists or other errors
         os.makedirs(dataset_folder, exist_ok=False)
         print("Created dataset directory : {}".format(dataset_folder))
     except OSError as e:
