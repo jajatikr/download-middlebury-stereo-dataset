@@ -4,29 +4,36 @@
 # Author: Jajati Keshari Routray
 # Date Created: Mar 7 2017
 # Usage: Download Middlebury stereo dataset
-# Requirements: BeautifulSoup, lxml library
+# Requirements: Python >= 3.4.1, BeautifulSoup, lxml library
 # License: MIT
-# <https://github.com/jajatikr/download-middlebury-stereo-dataset/blob/master/LICENSE>
 
 # TODO:
-# 1. File handling in Windows system, Passing filenames as arguments
-# 2. PEP8 formatting
-# 3. File download error handling, File already present handling
-# 4. File download progressbar
-# 5. Use regex in bs4 findAll instead of for loop to remove non-zip elements
+# 1. File download error handling, File already present handling
+# 2. File download progressbar
+# 3. Use regex in bs4 findAll instead of for loop to remove non-zip elements
 
 import os
-import sys
 import urllib
 from bs4 import BeautifulSoup
 
-# Initialize Dataset directory path
-home = os.path.expanduser("~")
-dataset_folder = home + '/Downloads/stereo_dataset'
+dataset_folder = input('Please provide dataset directory path to download:\n')
 
 # Check and create Dataset directory
-if not os.path.exists(dataset_folder):
-    os.makedirs(dataset_folder)
+try:
+    # Creates folder. Raises error if folder exists
+    os.makedirs(dataset_folder, exist_ok=False)
+    print("Created dataset directory : {}".format(dataset_folder))
+except OSError as e:
+    # Error printing:
+    print('Unable to locate or create provided directory:')
+    print('Error No.         : {}'.format(e.errno))
+    print('Location          : {}'.format(e.filename))
+    print('Error description : {}'.format(e.strerror))
+    # Exception handling
+    home = os.path.expanduser("~")
+    dataset_folder = home + '/stereo_dataset'
+    os.makedirs(dataset_folder, exist_ok=True)
+    print('\nCreating dataset directory : {}\n'.format(dataset_folder))
 
 # Change current working directory to Dataset directory
 os.chdir(dataset_folder)
