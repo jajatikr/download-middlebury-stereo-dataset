@@ -15,6 +15,20 @@
 import os
 import re
 import urllib.request as url_req
+from urllib.error import URLError, HTTPError
+
+
+def url_response(website):
+    try:
+        response = url_req.urlopen(website)
+        return response
+    except HTTPError as e:
+        print('The server couldn\'t fulfill the request.')
+        print('Error code: ', e.code)
+    except URLError as e:
+        print('Unable to reach the server.')
+        print('Reason: ', e.reason)
+
 
 dataset_folder = input('\nPlease provide dataset directory path to download:\n')
 
@@ -41,8 +55,11 @@ os.chdir(dataset_folder)
 
 # Read and parse website html
 url = 'http://vision.middlebury.edu/stereo/data/scenes2014/zip/'
-response = url_req.urlopen(url)
-html = response.read().decode('utf-8')
+response = url_response(url)
+if response is None:
+    quit()
+else:
+    html = response.read().decode('utf-8')
 
 # [<a href="xyz.zip">xyz.zip</a>, ...] anchor elements
 anchor_list = re.findall(r"\"(\w+-\w+\.zip)\"", html)
@@ -53,8 +70,11 @@ print('Downloading...\n')
 for link_ext in anchor_list:
         count += 1
         download_link = url + link_ext
-        file_size = float(url_req.urlopen(download_link).info()['Content-Length']) / 1048576
-        print('{:>2}/{} : {:>6} MB | {} '.format(count, len(anchor_list), round(file_size, 2), link_ext))
+        response = url_response(download_link)
+        file_size = float(response.info()['Content-Length']) / 1000000
+        print('{:>2}/{} : {:>5} MB | {} '.format(count, len(anchor_list), round(file_size, 1), link_ext))
         url_req.urlretrieve(url + link_ext, link_ext)  # download : retrieve(url, filename)
+#       file1_size = os.path.getsize(link_ext)
+#       print(file1_size)
 
 print('\nDownload complete\n')
