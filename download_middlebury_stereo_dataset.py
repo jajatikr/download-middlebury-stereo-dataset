@@ -44,7 +44,7 @@ response = url_req.urlopen(url)
 html = response.read().decode('utf-8')
 
 # [<a href="xyz.zip">xyz.zip</a>, ...] anchor elements
-anchor_list = re.findall(r"\"([A-Z]\w+-.+\.zip)\"", html)
+anchor_list = re.findall(r"\"(\w+-\w+\.zip)\"", html)
 
 count = 0
 print('Downloading...\n')
